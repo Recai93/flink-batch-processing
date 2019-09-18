@@ -8,7 +8,7 @@ import org.apache.flink.util.Collector;
 import java.util.HashSet;
 import java.util.Set;
 
-import static util.Constants.ALL_ACTIONS_ARRAY;
+import static util.Constant.ALL_ACTIONS_ARRAY;
 
 public class TopUsersReducer implements GroupReduceFunction<Tuple3<String, String, Integer>, Tuple2<String, Integer>> {
 

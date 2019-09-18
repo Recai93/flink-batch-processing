@@ -8,7 +8,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import reducer.AllProductViewsReducer;
 import reducer.TopUsersReducer;
 
-import static util.Constants.TOP_USERS_NUMBER;
+import static util.Constant.TOP_USERS_NUMBER;
 
 public class UserEventsProcessor {
 

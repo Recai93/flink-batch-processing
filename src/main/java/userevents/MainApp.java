@@ -5,12 +5,12 @@ import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.core.fs.FileSystem;
-import util.Utils;
+import util.ProcessorUtil;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static util.Constants.*;
+import static util.Constant.*;
 
 public class MainApp {
 
@@ -25,7 +25,7 @@ public class MainApp {
             DataSet<Tuple1<String>> lines;
             if (params.has(INPUT_FILE_PARAMETER)) {
 
-                lines = Utils.readInput(params.get(INPUT_FILE_PARAMETER), env);
+                lines = ProcessorUtil.readInput(params.get(INPUT_FILE_PARAMETER), env);
 
                 String outputDir = "";
                 if (params.has(OUTPUT_DIR_PARAMETER)) {

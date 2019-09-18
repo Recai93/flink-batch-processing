@@ -1,98 +1,111 @@
 package userevents;
 
-import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.junit.Assert;
 import org.junit.Test;
-import util.Constants;
-import util.Utils;
+import util.Constant;
 
 import java.util.List;
 
-public class UserEventsProcessorTest {
+import static org.junit.Assert.assertEquals;
 
-    private static final String INPUT_FILE = "src/test/resources/input.csv";
+public class UserEventsProcessorTest {
 
     private ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
     private UserEventsProcessor processor = new UserEventsProcessor();
 
     @Test
-    public void testGetProductViews() throws Exception {
-        String expectedFirstProductId = "496";
-        String expectedSecondProductId = "642";
+    public void itShouldGetProductViews() throws Exception {
+        DataSource<Tuple1<String>> input = env
+                .fromElements(new Tuple1<>("1535816823|496|view|13"),
+                        new Tuple1<>("1536392928|496|add|69"),
+                        new Tuple1<>("1536272308|642|view|47"),
+                        new Tuple1<>("1536272308|642|view|47"),
+                        new Tuple1<>("1536392928|642|view|69"));
 
-        Integer expectedFirstProductViews = 3;
-        Integer expectedSecondProductViews = 1;
+        List<Tuple2<String, Integer>> tuples = processor.getProductViews(input).collect();
 
-        DataSet<Tuple2<String, Integer>> data = processor.getProductViews(Utils.readInput(INPUT_FILE, env));
-        List<Tuple2<String, Integer>> tuples = data.collect();
-
-        Assert.assertEquals(tuples.size(), 2);
+        assertEquals(tuples.size(), 2);
         for (Tuple2<String, Integer> t : tuples) {
-            if (t.f0.equals(expectedFirstProductId)) {
-                Assert.assertEquals(expectedFirstProductViews, t.f1);
-            } else if (t.f0.equals(expectedSecondProductId)) {
-                Assert.assertEquals(expectedSecondProductViews, t.f1);
+            if (t.f0.equals("496")) {
+                assertEquals(1, t.f1.intValue());
+            } else if (t.f0.equals("642")) {
+                assertEquals(2, t.f1.intValue());
             }
         }
     }
 
     @Test
-    public void testGetUserProductViews() throws Exception {
-        String expectedProductId = "642";
+    public void itShouldGetUserProductViews() throws Exception {
+        DataSource<Tuple1<String>> input = env
+                .fromElements(new Tuple1<>("1535816823|496|view|41"),
+                        new Tuple1<>("1536392928|496|add|69"),
+                        new Tuple1<>("1536272308|642|view|47"),
+                        new Tuple1<>("1536757406|164|remove|49"));
 
-        DataSet<Tuple1<String>> data = processor.getUserProductViews(Utils.readInput(INPUT_FILE, env));
-        List<Tuple1<String>> tuples = data.collect();
-        Assert.assertEquals(tuples.size(), 1);
-        Assert.assertEquals(tuples.get(0).f0, expectedProductId);
+        List<Tuple1<String>> tuples = processor.getUserProductViews(input).collect();
+
+        assertEquals(1, tuples.size());
+        assertEquals("642", tuples.get(0).f0);
     }
 
     @Test
-    public void testGetUserEvents() throws Exception {
-        Integer expectedProductViews = 2;
+    public void itShouldGetUserEvents() throws Exception {
+        DataSource<Tuple1<String>> input = env
+                .fromElements(new Tuple1<>("1535816823|496|view|47"),
+                        new Tuple1<>("1536392928|496|add|69"),
+                        new Tuple1<>("1536272308|642|view|47"),
+                        new Tuple1<>("1536757406|164|remove|49"));
 
-        DataSet<Tuple2<String, Integer>> data = processor.getUserEvents(Utils.readInput(INPUT_FILE, env));
-        List<Tuple2<String, Integer>> tuples = data.collect();
-        Assert.assertEquals(tuples.size(), 1);
-        Assert.assertEquals(tuples.get(0).f0, Constants.VIEW_PRODUCT_ACTION);
-        Assert.assertEquals(tuples.get(0).f1, expectedProductViews);
+        List<Tuple2<String, Integer>> tuples = processor.getUserEvents(input).collect();
+
+        assertEquals(1, tuples.size());
+        assertEquals(Constant.VIEW_PRODUCT_ACTION, tuples.get(0).f0);
+        assertEquals(2, tuples.get(0).f1.intValue());
     }
 
     @Test
-    public void testGetAllEvents() throws Exception {
-        Integer expectedViewCount = 5;
-        Integer expectedClickCount = 1;
-        Integer expectedAddCount = 3;
-        Integer expectedRemoveCount = 1;
+    public void itShouldGetAllEvents() throws Exception {
+        DataSource<Tuple1<String>> input = env
+                .fromElements(new Tuple1<>("1535816823|496|view|13"),
+                        new Tuple1<>("1536392928|496|add|69"),
+                        new Tuple1<>("1536272308|642|view|47"),
+                        new Tuple1<>("1536757406|164|remove|49"),
+                        new Tuple1<>("1536757406|164|add|49"),
+                        new Tuple1<>("1536757406|164|click|49"));
 
-        DataSet<Tuple2<String, Integer>> data = processor.getAllEvents(Utils.readInput(INPUT_FILE, env));
-        List<Tuple2<String, Integer>> tuples = data.collect();
+        List<Tuple2<String, Integer>> tuples = processor.getAllEvents(input).collect();
 
-        Assert.assertEquals(tuples.size(), 4);
+        assertEquals(4, tuples.size());
         for (Tuple2<String, Integer> t : tuples) {
-            switch (t.f0) {
-                case Constants.ADD_PRODUCT_ACTION:
-                    Assert.assertEquals(expectedAddCount, t.f1);
-                    break;
-                case Constants.REMOVE_PRODUCT_ACTION:
-                    Assert.assertEquals(expectedRemoveCount, t.f1);
-                    break;
-                case Constants.CLICK_PRODUCT_ACTION:
-                    Assert.assertEquals(expectedClickCount, t.f1);
-                    break;
-                case Constants.VIEW_PRODUCT_ACTION:
-                    Assert.assertEquals(expectedViewCount, t.f1);
-                    break;
+            if (t.f0.equals(Constant.ADD_PRODUCT_ACTION)) {
+                assertEquals(2, t.f1.intValue());
+            } else if (t.f0.equals(Constant.REMOVE_PRODUCT_ACTION)) {
+                assertEquals(1, t.f1.intValue());
+            } else if (t.f0.equals(Constant.CLICK_PRODUCT_ACTION)) {
+                assertEquals(1, t.f1.intValue());
+            } else if (t.f0.equals(Constant.VIEW_PRODUCT_ACTION)) {
+                assertEquals(2, t.f1.intValue());
             }
         }
     }
 
     @Test
-    public void testGetTopUser() throws Exception {
-        String expectedTopUserId = "49";
-        DataSet<Tuple1<String>> data = processor.getTopUsers(Utils.readInput(INPUT_FILE, env));
-        Assert.assertEquals(expectedTopUserId, data.collect().get(0).f0);
+    public void itShouldGetTopUser() throws Exception {
+        DataSource<Tuple1<String>> input = env
+                .fromElements(new Tuple1<>("1535816823|496|view|13"),
+                        new Tuple1<>("1536392928|496|add|69"),
+                        new Tuple1<>("1536272308|642|view|47"),
+                        new Tuple1<>("1536757406|164|remove|49"),
+                        new Tuple1<>("1536757406|164|add|49"),
+                        new Tuple1<>("1536757406|164|click|49"),
+                        new Tuple1<>("1536392928|642|view|49"));
+
+        List<Tuple1<String>> tuples = processor.getTopUsers(input).collect();
+
+        assertEquals(1, tuples.size());
+        assertEquals("49", tuples.get(0).f0);
     }
 }

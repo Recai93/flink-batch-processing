@@ -4,9 +4,12 @@ import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.tuple.Tuple1;
 
-import static util.Constants.DELIMITER_REGEX;
+import static util.Constant.DELIMITER_REGEX;
 
-public class Utils {
+public class ProcessorUtil {
+
+    private ProcessorUtil() {
+    }
 
     public static String[] parseLine(Tuple1<String> value) {
         return value.getField(0).toString().trim().toLowerCase().split(DELIMITER_REGEX);

@@ -18,12 +18,12 @@ public class MainApp {
             final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
             env.getConfig().setGlobalJobParameters(params);
 
-            // get input data
             DataSet<Tuple1<String>> lines;
             if (params.has(INPUT_FILE_PARAMETER)) {
 
+                // get input data
                 lines = Utils.readInput(params.get(INPUT_FILE_PARAMETER), env);
-                // print the result
+
                 String outputDir = "";
                 if (params.has(OUTPUT_DIR_PARAMETER)) {
                     outputDir = params.get(OUTPUT_DIR_PARAMETER);
@@ -32,6 +32,8 @@ public class MainApp {
                 }
 
                 UserEventsProcessor processor = new UserEventsProcessor();
+
+                // print the result
                 processor.getAllEvents(lines).writeAsCsv(outputDir + ALL_EVENTS_OUTPUT, ROW_DELIMITER,
                         DELIMITER, FileSystem.WriteMode.OVERWRITE);
                 processor.getProductViews(lines).writeAsCsv(outputDir + PRODUCT_VIEWS_OUTPUT, ROW_DELIMITER,

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class UserEventsProcessorTest {
 
-    private static final String INPUT_FILE = "/Users/recaihuseyin/flink/flink-batch-processing/src/test/resources/input.csv";
+    private static final String INPUT_FILE = "src/test/resources/input.csv";
 
     private ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
     private UserEventsProcessor processor = new UserEventsProcessor();

@@ -11,8 +11,8 @@ date|productId|eventName|userId
 ```
 - date: integer timstamp
 - product id: integer
-- eventName: view|add|remove|click
-- userId: integer timestamp
+- eventName: string (view|add|remove|click)
+- userId: integer
 
 ### Output format:
 

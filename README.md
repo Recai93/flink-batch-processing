@@ -9,10 +9,10 @@ csv input files have the following format
 ```
 date|productId|eventName|userId
 ```
-date: integer timstamp
-product id: integer
-eventName: view|add|remove|click
-userId: integer timestamp
+- date: integer timstamp
+- product id: integer
+- eventName: view|add|remove|click
+- userId: integer timestamp
 
 ### Output format:
 

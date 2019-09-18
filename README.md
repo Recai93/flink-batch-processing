@@ -9,7 +9,7 @@ csv input files have the following format
 ```
 date|productId|eventName|userId
 ```
-- date: integer timstamp
+- date: integer (timstamp)
 - productId: integer
 - eventName: string (view|add|remove|click)
 - userId: integer

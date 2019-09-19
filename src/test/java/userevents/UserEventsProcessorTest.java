@@ -19,7 +19,7 @@ public class UserEventsProcessorTest {
     @Test
     public void itShouldGetProductViews() throws Exception {
         DataSource<Tuple1<String>> input = env
-                .fromElements(new Tuple1<>("1535816823|496|view|13"),
+                .fromElements(new Tuple1<>("1535816823|496|click|13"),
                         new Tuple1<>("1536392928|496|add|69"),
                         new Tuple1<>("1536272308|642|view|47"),
                         new Tuple1<>("1536272308|642|view|47"),
@@ -27,14 +27,9 @@ public class UserEventsProcessorTest {
 
         List<Tuple2<String, Integer>> tuples = processor.getProductViews(input).collect();
 
-        assertEquals(tuples.size(), 2);
-        for (Tuple2<String, Integer> t : tuples) {
-            if (t.f0.equals("496")) {
-                assertEquals(1, t.f1.intValue());
-            } else if (t.f0.equals("642")) {
-                assertEquals(2, t.f1.intValue());
-            }
-        }
+        assertEquals(1, tuples.size());
+        assertEquals("642", tuples.get(0).f0);
+        assertEquals(2, tuples.get(0).f1.intValue());
     }
 
     @Test

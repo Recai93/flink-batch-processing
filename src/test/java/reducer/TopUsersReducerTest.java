@@ -8,21 +8,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import util.Constant;
 
-import static org.mockito.Mockito.times;
-
-public class ReducersTest {
-
-    @Test
-    public void itShouldReduceProductViews() {
-        AllProductViewsReducer reducer = new AllProductViewsReducer();
-        Collector<Tuple2<String, Integer>> collector = Mockito.mock(Collector.class);
-        Tuple2[] tuples = {new Tuple2<>("491", "13"), new Tuple2<>("491", "15")};
-        Iterable<Tuple2<String, String>> iterable = new ArrayIterator<>(tuples);
-
-        reducer.reduce(iterable, collector);
-
-        Mockito.verify(collector, times(1)).collect(new Tuple2<>("491", 2));
-    }
+public class TopUsersReducerTest {
 
     @Test
     public void itShouldReduceTopUsers() {
@@ -36,6 +22,6 @@ public class ReducersTest {
 
         reducer.reduce(iterable, collector);
 
-        Mockito.verify(collector, times(1)).collect(new Tuple2<>("13", 7));
+        Mockito.verify(collector).collect(new Tuple2<>("13", 7));
     }
 }

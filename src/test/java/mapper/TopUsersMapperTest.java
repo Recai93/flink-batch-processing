@@ -5,7 +5,6 @@ import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.util.Collector;
 import org.junit.Test;
 import org.mockito.Mockito;
-import util.Constant;
 
 public class TopUsersMapperTest {
 
@@ -16,6 +15,6 @@ public class TopUsersMapperTest {
 
         mapper.flatMap(new Tuple1<>("1535816823|495|view|15"), collector);
 
-        Mockito.verify(collector).collect(new Tuple3<>("15", Constant.VIEW_PRODUCT_ACTION, 1));
+        Mockito.verify(collector).collect(new Tuple3<>("15", "view", 1));
     }
 }

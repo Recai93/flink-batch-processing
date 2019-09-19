@@ -6,7 +6,6 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.util.Arra
 import org.apache.flink.util.Collector;
 import org.junit.Test;
 import org.mockito.Mockito;
-import util.Constant;
 
 public class TopUsersReducerTest {
 
@@ -14,10 +13,10 @@ public class TopUsersReducerTest {
     public void itShouldReduceTopUsers() {
         TopUsersReducer reducer = new TopUsersReducer();
         Collector<Tuple2<String, Integer>> collector = Mockito.mock(Collector.class);
-        Tuple3[] tuples = {new Tuple3<>("13", Constant.VIEW_PRODUCT_ACTION, 3),
-                new Tuple3<>("13", Constant.CLICK_PRODUCT_ACTION, 1),
-                new Tuple3<>("13", Constant.REMOVE_PRODUCT_ACTION, 1),
-                new Tuple3<>("13", Constant.ADD_PRODUCT_ACTION, 2)};
+        Tuple3[] tuples = {new Tuple3<>("13", "view", 3),
+                new Tuple3<>("13", "click", 1),
+                new Tuple3<>("13", "remove", 1),
+                new Tuple3<>("13", "add", 2)};
         Iterable<Tuple3<String, String, Integer>> iterable = new ArrayIterator<>(tuples);
 
         reducer.reduce(iterable, collector);

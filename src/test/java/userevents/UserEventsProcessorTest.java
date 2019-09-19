@@ -5,7 +5,6 @@ import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.tuple.Tuple1;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.junit.Test;
-import util.Constant;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class UserEventsProcessorTest {
         List<Tuple2<String, Integer>> tuples = processor.getUserEvents(input).collect();
 
         assertEquals(1, tuples.size());
-        assertEquals(Constant.VIEW_PRODUCT_ACTION, tuples.get(0).f0);
+        assertEquals("view", tuples.get(0).f0);
         assertEquals(2, tuples.get(0).f1.intValue());
     }
 
@@ -75,13 +74,13 @@ public class UserEventsProcessorTest {
 
         assertEquals(4, tuples.size());
         for (Tuple2<String, Integer> t : tuples) {
-            if (t.f0.equals(Constant.ADD_PRODUCT_ACTION)) {
+            if (t.f0.equals("add")) {
                 assertEquals(2, t.f1.intValue());
-            } else if (t.f0.equals(Constant.REMOVE_PRODUCT_ACTION)) {
+            } else if (t.f0.equals("remove")) {
                 assertEquals(1, t.f1.intValue());
-            } else if (t.f0.equals(Constant.CLICK_PRODUCT_ACTION)) {
+            } else if (t.f0.equals("click")) {
                 assertEquals(1, t.f1.intValue());
-            } else if (t.f0.equals(Constant.VIEW_PRODUCT_ACTION)) {
+            } else if (t.f0.equals("view")) {
                 assertEquals(2, t.f1.intValue());
             }
         }
